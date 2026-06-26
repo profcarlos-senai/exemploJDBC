@@ -1,13 +1,10 @@
 package senai.tabela;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Regiao {
-    private Integer id; // INTEGER, não INT
+public class Estado {
+    private Integer id;
     private String sigla;
     private String nome;
-    List<Estado> estados;
+    private Regiao regiao;
 
     public Integer getId() {
         return id;
@@ -33,11 +30,11 @@ public class Regiao {
         this.nome = nome;
     }
 
-    public List<Estado> getEstados() {
-        return estados;
+    public Regiao getRegiao() {
+        return regiao;
     }
 
-    public void setEstados(List<Estado> estados) {
-        this.estados = estados;
+    public void setRegiao(Regiao regiao) {
+        this.regiao = regiao;
     }
 }
