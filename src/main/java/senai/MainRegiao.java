@@ -1,5 +1,6 @@
 package senai; // talvez precise mudar isso
 
+import senai.tabela.Cidade;
 import senai.tabela.Estado;
 import senai.tabela.Regiao; // e isso
 
@@ -29,6 +30,9 @@ public class MainRegiao {
                     );
                     for(Estado estado : regiao.getEstados()){
                         System.out.printf("\t%s - %s\n", estado.getSigla(), estado.getNome());
+                        for(Cidade cidade : estado.getCidades()){
+                            System.out.println("\t\t" + cidade.getNome()+ "("+cidade.getPopulacao()/1000+" mil hab)");
+                        }
                     }
                 }
             }
@@ -67,7 +71,7 @@ public class MainRegiao {
             return brasil;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // mostra o erro do java na tela
         }
 
         return null; // não conseguiu criar a lista :(
@@ -75,7 +79,7 @@ public class MainRegiao {
 
     private static List<Estado> listaEstados(Connection conexao, Regiao regiao) {
         try (PreparedStatement sta = conexao.prepareStatement("select * from estado where regiao_id = ? order by nome;")){
-            // injeta o id da região na query
+            // substitui o 1º "?" da query por um int vindo de regiao.getId()
             sta.setInt(1, regiao.getId());
 
             // agora roda a query que eu preparei
@@ -90,9 +94,42 @@ public class MainRegiao {
                 estado.setRegiao(regiao);
                 // soca na lista
                 estados.add(estado);
+
+                // pega a lista de cidades
+                estado.setCidades( listaCidades(conexao, estado));
             }
 
             return estados;
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // não conseguiu criar a lista :(
+    }
+
+    private static List<Cidade> listaCidades(Connection conexao, Estado estado) {
+        String sql = "select * from cidade where uf_id = ? order by nome;";
+        try (PreparedStatement sta = conexao.prepareStatement(sql)){
+            // substitui o 1º "?" da query por um int vindo de estado.getId()
+            sta.setInt(1, estado.getId());
+
+            // agora roda a query que eu preparei
+            ResultSet res = sta.executeQuery();
+
+            ArrayList<Cidade> cidades = new ArrayList<>();
+            while (res.next()) {
+                Cidade cidade = new Cidade();
+                cidade.setId( res.getInt("id") );
+                cidade.setNome( res.getString("nome") );
+                cidade.setPopulacao( res.getInt("populacao") );
+                cidade.setDdd( res.getInt("ddd") );
+                cidade.setEstado( estado );
+                // soca na lista
+                cidades.add(cidade);
+            }
+
+            return cidades;
 
         }catch (SQLException e) {
             e.printStackTrace();

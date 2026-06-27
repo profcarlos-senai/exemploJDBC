@@ -1,10 +1,13 @@
 package senai.tabela;
 
+import java.util.List;
+
 public class Estado {
     private Integer id;
     private String sigla;
     private String nome;
     private Regiao regiao;
+    private List<Cidade> cidades;
 
     public Integer getId() {
         return id;
@@ -36,5 +39,13 @@ public class Estado {
 
     public void setRegiao(Regiao regiao) {
         this.regiao = regiao;
+    }
+
+    public List<Cidade> getCidades() {
+        return cidades;
+    }
+
+    public void setCidades(List<Cidade> cidades) {
+        this.cidades = cidades;
     }
 }
